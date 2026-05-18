@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แฟ้มตารางเรียนของน้องนกุล</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&family=Mali:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-pink: #ff66a3;
+            --light-pink: #ffe6f0;
+            --bg-pink: #fff0f5;
+            --text-dark: #5a2e3f;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-pink);
+            background-image: radial-gradient(#ffb3d1 2px, transparent 2px);
+            background-size: 30px 30px;
+            font-family: 'Kanit', sans-serif;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Mali', cursive;
+            color: var(--primary-pink);
+            font-size: 3.5em;
+            margin: 0;
+            text-shadow: 3px 3px 0px #fff, 6px 6px 0px var(--light-pink);
+        }
+
+        p.subtitle {
+            font-size: 1.2em;
+            color: #d81b60;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .level-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .level-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.15);
+            border: 4px dashed #ff99c2;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.25);
+            border-color: var(--primary-pink);
+        }
+
+        .level-title {
+            font-family: 'Mali', cursive;
+            font-size: 1.8em;
+            color: #d81b60;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--light-pink);
+            padding-bottom: 10px;
+        }
+
+        .btn-term {
+            display: block;
+            width: 100%;
+            padding: 12px 0;
+            margin-bottom: 15px;
+            background-color: var(--light-pink);
+            color: #d81b60;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .btn-term:hover {
+            background-color: var(--primary-pink);
+            color: white;
+            border-color: #ff3385;
+            transform: scale(1.02);
+        }
+        
+        .btn-term.active {
+            background-color: var(--primary-pink);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 102, 163, 0.4);
+        }
+
+        .decor {
+            position: absolute;
+            font-size: 2.5em;
+            opacity: 0.8;
+        }
+        
+        .d1 { top: 10px; right: 10px; transform: rotate(15deg); }
+        .d2 { bottom: 10px; left: 10px; transform: rotate(-15deg); }
+
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #ff66a3;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 2.5em; }
+            .level-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-header">
+        <h1>🎒 ตารางเรียนของน้องนกุล 🎒</h1>
+        <p class="subtitle">รวมตารางเรียนตั้งแต่เตรียมอนุบาล จนถึง อนุบาล 3</p>
+    </div>
+
+    <div class="level-container">
+        <!-- เตรียมอนุบาล -->
+        <div class="level-card">
+            <div class="decor d1">👶</div>
+            <div class="level-title">เตรียมอนุบาล</div>
+            <a href="pre-k1.html" class="btn-term active">เทอม 1 (ล่าสุด ✨)</a>
+            <a href="pre-k2.html" class="btn-term">เทอม 2</a>
+        </div>
+
+        <!-- อนุบาล 1 -->
+        <div class="level-card">
+            <div class="decor d1">🐥</div>
+            <div class="level-title">อนุบาล 1</div>
+            <a href="k1-term1.html" class="btn-term">เทอม 1</a>
+            <a href="k1-term2.html" class="btn-term">เทอม 2</a>
+        </div>
+
+        <!-- อนุบาล 2 -->
+        <div class="level-card">
+            <div class="decor d1">🐰</div>
+            <div class="level-title">อนุบาล 2</div>
+            <a href="k2-term1.html" class="btn-term">เทอม 1</a>
+            <a href="k2-term2.html" class="btn-term">เทอม 2</a>
+        </div>
+
+        <!-- อนุบาล 3 -->
+        <div class="level-card">
+            <div class="decor d1">🦊</div>
+            <div class="level-title">อนุบาล 3</div>
+            <a href="k3-term1.html" class="btn-term">เทอม 1</a>
+            <a href="k3-term2.html" class="btn-term">เทอม 2</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>จัดทำด้วยความรัก 💖 สำหรับน้องนกุลคนเก่ง</p>
+    </div>
+
+</body>
+</html>
