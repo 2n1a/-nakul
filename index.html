@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -54,7 +54,7 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 30px;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
         }
 
         .level-card {
@@ -128,9 +128,31 @@
             font-size: 0.9em;
         }
 
-        @media (max-width: 600px) {
-            h1 { font-size: 2.5em; }
-            .level-container { grid-template-columns: 1fr; }
+        /* === Responsive: Tablet === */
+        @media (max-width: 768px) {
+            body { padding: 25px 15px; }
+            h1 { font-size: 2.4em; }
+            p.subtitle { font-size: 1em; }
+            .level-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 18px;
+            }
+            .level-card { padding: 18px; }
+            .level-title { font-size: 1.5em; }
+        }
+
+        /* === Responsive: Mobile === */
+        @media (max-width: 480px) {
+            body { padding: 20px 10px; }
+            h1 { font-size: 1.8em; }
+            p.subtitle { font-size: 0.95em; }
+            .level-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            .level-card { padding: 15px; border-radius: 18px; }
+            .btn-term { font-size: 1em; padding: 10px 0; }
+            .decor { font-size: 1.8em; }
         }
     </style>
 </head>
