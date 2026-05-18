@@ -23,8 +23,6 @@
 body {
   font-family: 'Kanit', sans-serif;
   background-color: var(--bg-pink);
-  background-image: radial-gradient(var(--border-pink) 2px, transparent 2px);
-  background-size: 30px 30px;
   color: var(--text-dark);
   min-height: 100vh;
 }
