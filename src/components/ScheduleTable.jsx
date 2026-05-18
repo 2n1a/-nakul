@@ -1,3 +1,5 @@
+import SparkleCell from './SparkleCell'
+
 // ตารางเรียนรายสัปดาห์
 export default function ScheduleTable({ data }) {
   const { periods, rows } = data
@@ -25,7 +27,9 @@ export default function ScheduleTable({ data }) {
           {rows.map((row, ri) => (
             <tr key={ri}>
               {/* ชื่อวัน */}
-              <td className={`day-col day-${row.dayClass}`}>{row.day}</td>
+              <SparkleCell className={`day-col day-${row.dayClass}`}>
+                {row.day}
+              </SparkleCell>
 
               {/* กิจกรรมเคลื่อนไหว (rowspan=5 แถวแรก) */}
               {ri === 0 && (
@@ -35,14 +39,15 @@ export default function ScheduleTable({ data }) {
               )}
 
               {row.cells.map((cell, ci) => {
+                // พัก 10 นาที - rowspan ทุกแถว
                 if (cell.isBreak) {
-                  // พัก 10 นาที - rowspan ทุกแถว
                   return ri === 0 ? (
                     <td key={ci} rowSpan={rows.length} className="break-cell">
                       พัก 10 นาที
                     </td>
                   ) : null
                 }
+                // พักกลางวัน
                 if (cell.isLunch) {
                   return ri === 0 ? (
                     <td key={ci} rowSpan={rows.length} className="lunch-cell">
@@ -50,13 +55,17 @@ export default function ScheduleTable({ data }) {
                     </td>
                   ) : null
                 }
+                // นอนพักกลางวัน
                 if (cell.isNap) {
                   return (
-                    <td key={ci} className="nap-cell">นอนพักกลางวัน</td>
+                    <SparkleCell key={ci} className="nap-cell">
+                      นอนพักกลางวัน
+                    </SparkleCell>
                   )
                 }
+                // วิชาทั่วไป — ใช้ SparkleCell
                 return (
-                  <td key={ci} className={`subject-cell day-${row.dayClass}`}>
+                  <SparkleCell key={ci} className={`subject-cell day-${row.dayClass}`}>
                     <span className="subject-title">{cell.label}</span>
                     {cell.sub && (
                       <>
@@ -64,7 +73,7 @@ export default function ScheduleTable({ data }) {
                         <span className="teacher-name">{cell.sub}</span>
                       </>
                     )}
-                  </td>
+                  </SparkleCell>
                 )
               })}
             </tr>

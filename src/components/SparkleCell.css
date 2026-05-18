@@ -1,0 +1,43 @@
+.sparkle-cell {
+  position: relative;
+  overflow: visible !important;
+  cursor: default;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sparkle-cell:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 16px rgba(255, 102, 163, 0.25);
+  z-index: 10;
+}
+
+/* ดาวที่ burst ออก */
+.spark {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 999;
+  line-height: 1;
+  animation: spark-burst var(--dur, 500ms) ease-out forwards;
+  user-select: none;
+}
+
+@keyframes spark-burst {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translate(0px, 0px) scale(1.2) rotate(0deg);
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -50%)
+      translate(var(--tx), var(--ty))
+      scale(0.3)
+      rotate(180deg);
+  }
+}
