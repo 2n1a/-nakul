@@ -72,7 +72,7 @@ export default function SchedulePage() {
               {data.images.map((img, i) => (
                 <motion.img
                   key={i}
-                  src={img.src}
+                  src={`${import.meta.env.BASE_URL}${img.src.replace(/^\//, '')}`}
                   alt={img.alt}
                   initial={{ scale: 0.8, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
