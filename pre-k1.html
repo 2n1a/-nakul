@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
     <meta charset="UTF-8">
@@ -40,7 +40,7 @@
             border-radius: 30px;
             padding: 40px;
             box-shadow: 0 15px 35px rgba(255, 105, 180, 0.2);
-            max-width: 1200px;
+            max-width: 1800px;
             width: 100%;
             position: relative;
             border: 5px dashed var(--primary-pink);
@@ -240,6 +240,76 @@
             margin-bottom: 4px;
         }
 
+        /* === Responsive: Tablet === */
+        @media (max-width: 900px) {
+            body {
+                padding: 20px 12px;
+            }
+            .container {
+                padding: 25px 15px;
+                border-radius: 20px;
+            }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.3em; }
+
+            /* ตารางเรียน: เลื่อนแนวนอนได้ */
+            .table-wrapper {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                border-radius: 12px;
+            }
+            .schedule-table {
+                min-width: 750px;
+                font-size: 0.85em;
+            }
+            .schedule-table th, .schedule-table td {
+                padding: 8px 5px;
+                font-size: 0.9em;
+            }
+
+            /* รายละเอียดกิจกรรม: 2 คอลัมน์ */
+            .details-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* === Responsive: Mobile === */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px 8px;
+            }
+            .container {
+                padding: 20px 12px;
+                border-radius: 15px;
+                border-width: 3px;
+            }
+            h1 { font-size: 1.5em; }
+            h2 { font-size: 1.1em; }
+
+            .schedule-table {
+                min-width: 650px;
+                font-size: 0.78em;
+            }
+
+            /* รายละเอียดกิจกรรม: 1 คอลัมน์ */
+            .details-section {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            /* แถวภาษาจีน+อังกฤษ: stack แนวตั้ง */
+            .details-col[style*="grid-column"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            .images-container img {
+                width: 110px;
+                height: 110px;
+            }
+
+            .decor { font-size: 2.2em; }
+        }
+
         @media print {
             body {
                 background: none;
@@ -261,10 +331,11 @@
         <div class="decor decor-4">🍓</div>
         
         <div class="header">
-            <h1>โรงเรียนนวมินทราชินูทิศ (ฮัวเหมิง)</h1>
+            <h1>โรงเรียนวมินทร์วิทยา (ฮัวเหมิง)</h1>
             <h2>ตารางเรียนชั้นเตรียมอนุบาล ภาคเรียนที่ 1 ปีการศึกษา 2569</h2>
         </div>
         
+        <div class="table-wrapper">
         <table class="schedule-table">
             <tr class="top-header">
                 <th>วัน</th>
@@ -302,7 +373,7 @@
                 </td>
                 <td class="subject-cell day-mon">
                     <span class="subject-title">English</span><br>
-                    <span class="teacher-name">ทิชเชอร์ศุภกาวดี</span>
+                    <span class="teacher-name">ทิชเชอร์ศุภภวดี</span>
                 </td>
                 <td rowspan="5" class="break-time" style="writing-mode: vertical-rl; text-orientation: mixed;">พัก 10 นาที</td>
                 <td class="subject-cell day-mon">
@@ -325,7 +396,7 @@
                 <td class="day-col day-tue">อังคาร</td>
                 <td class="subject-cell day-tue">
                     <span class="subject-title">English</span><br>
-                    <span class="teacher-name">ทิชเชอร์ศุภกาวดี</span>
+                    <span class="teacher-name">ทิชเชอร์ศุภภวดี</span>
                 </td>
                 <td class="subject-cell day-tue">
                     <span class="subject-title">เสริมประสบการณ์</span>
@@ -351,7 +422,7 @@
                 </td>
                 <td class="subject-cell day-wed">
                     <span class="subject-title">English</span><br>
-                    <span class="teacher-name">ทิชเชอร์ศุภกาวดี</span>
+                    <span class="teacher-name">ทิชเชอร์ศุภภวดี</span>
                 </td>
                 <td class="subject-cell day-wed">
                     <span class="subject-title">ภาษาจีน</span><br>
@@ -374,7 +445,7 @@
                 </td>
                 <td class="subject-cell day-thu">
                     <span class="subject-title">English</span><br>
-                    <span class="teacher-name">ทิชเชอร์ศุภกาวดี</span>
+                    <span class="teacher-name">ทิชเชอร์ศุภภวดี</span>
                 </td>
                 <td class="subject-cell day-thu">
                     <span class="subject-title">สร้างสรรค์</span>
@@ -411,6 +482,88 @@
                 </td>
             </tr>
         </table>
+        </div><!-- /table-wrapper -->
+
+        <!-- ส่วนรายละเอียดกิจกรรม -->
+        <div class="details-section">
+
+            <!-- คอลัมน์ 1: กิจกรรมเสริมประสบการณ์ + กลางแจ้ง -->
+            <div class="details-col">
+                <h3>🎯 กิจกรรมเสริมประสบการณ์</h3>
+                <ul>
+                    <li>ธรรมชาติและชนิดของต้นไม้</li>
+                    <li>ส่วนประกอบของต้นไม้</li>
+                    <li>การเจริญเติบโตของต้นไม้</li>
+                    <li>ประโยชน์ของต้นไม้</li>
+                    <li>วิธีการดูแลต้นไม้</li>
+                </ul>
+                <h3 style="margin-top: 16px;">🌳 กิจกรรมกลางแจ้ง</h3>
+                <ul>
+                    <li>เล่นเครื่องเล่นสนาม</li>
+                    <li>โยนบอลลงตะกร้า</li>
+                    <li>เคลื่อนไหวร่างกายอย่างอิสระ(ต้นไม้)</li>
+                    <li>การละเล่นพื้นบ้าน งูกินหาง</li>
+                    <li>เล่นห้องของเล่น</li>
+                </ul>
+            </div>
+
+            <!-- คอลัมน์ 2: กิจกรรมสร้างสรรค์ + เสรี -->
+            <div class="details-col">
+                <h3>🎨 กิจกรรมสร้างสรรค์</h3>
+                <ul>
+                    <li>วาดภาพ</li>
+                    <li>ระบายสีภาพ</li>
+                    <li>ปั้นดินน้ำมัน</li>
+                    <li>ฝนสี(ใบไม้)</li>
+                    <li>ลากเส้นโยงเส้น</li>
+                </ul>
+                <h3 style="margin-top: 16px;">🧩 กิจกรรมเสรี</h3>
+                <ul>
+                    <li>เรียนรู้ตามมุมประสบการณ์ต่างๆ</li>
+                    <li>นิทาน ต้นไม้มีประโยชน์</li>
+                    <li>เกมจับคู่ภาพเหมือน</li>
+                    <li>เกมจัดหมวดหมู่</li>
+                    <li>เกมภาพตัดต่อรูปภาพ</li>
+                </ul>
+            </div>
+
+            <!-- คอลัมน์ 3: กิจกรรมเคลื่อนไหว + เกมการศึกษา -->
+            <div class="details-col">
+                <h3>🎵 กิจกรรมเคลื่อนไหวและจังหวะ</h3>
+                <ul>
+                    <li>เคลื่อนไหวประกอบเพลง</li>
+                    <li>ทำท่าทางตามจังหวะ</li>
+                    <li>ทำท่าทางตามจินตนาการ</li>
+                    <li>เคลื่อนไหวตามจุดที่กำหนดให้</li>
+                    <li>เคลื่อนไหวตามจังหวะการเคาะ</li>
+                </ul>
+                <h3 style="margin-top: 16px;">🎲 เกมการศึกษา</h3>
+                <ul>
+                    <li>จำแนกประเภทของชนิดต้นไม้</li>
+                    <li>จับคู่ภาพและส่วนประกอบของต้นไม้</li>
+                    <li>จับคู่ภาพการเจริญเติบโตของต้นไม้</li>
+                    <li>จับคู่ประโยชน์ของต้นไม้</li>
+                    <li>หาภาพต้นไม้</li>
+                </ul>
+            </div>
+
+            <!-- คอลัมน์ 4: ภาษาจีน + ภาษาอังกฤษ -->
+            <div class="details-col" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div>
+                    <h3>🇨🇳 ภาษาจีน</h3>
+                    <p style="margin: 0; line-height: 1.8; font-size: 0.95em;">
+                        ปฏิบัติตามคำสั่ง คำขอร้องง่ายๆ ที่ใช้ในห้องเรียน เลือกภาพตามความหมายของกลุ่มคำที่ฟัง ฟังและออกเสียงตามเสียงวรรณยุกต์ในภาษาจีน ร้องเพลง นับเลข รู้จักผลไม้ และคำศัพท์ภาษาจีนง่ายๆ ได้
+                    </p>
+                </div>
+                <div>
+                    <h3>🇬🇧 ภาษาอังกฤษ</h3>
+                    <p style="margin: 0; line-height: 1.8; font-size: 0.95em;">
+                        ปฏิบัติตามคำสั่ง คำขอร้องง่ายๆ ที่ใช้ในห้องเรียน เลือกภาพตามความหมายของกลุ่มคำที่ฟัง ฟังและออกเสียงตามเสียงวรรณยุกต์ในภาษาอังกฤษ ร้องเพลง นับเลข รู้จักผลไม้ และคำศัพท์ภาษาอังกฤษง่ายๆ ได้
+                    </p>
+                </div>
+            </div>
+
+        </div>
 
         <!-- ส่วนแสดงรูปภาพเด็กๆ ของคุณ -->
         <div class="images-container">
