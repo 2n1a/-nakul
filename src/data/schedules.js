@@ -19,9 +19,10 @@ export const schedules = {
     subtitle: 'ภาคเรียนที่ 1 ปีการศึกษา 2569',
     // รูปภาพประจำเทอมนี้ (แยกอิสระต่อเทอม)
     images: [
-      { src: '/images/pic3.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
-      { src: '/images/pic2.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
-      { src: '/images/pic4.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
+      { src: '/images/pre-k1/pic1.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
+      { src: '/images/pre-k1/pic2.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
+      { src: '/images/pre-k1/pic3.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
+      { src: '/images/pre-k1/pic4.jpg', alt: 'ภาพน่ารักๆ ของหนู' },
     ],
     // หัวตาราง
     periods: [
