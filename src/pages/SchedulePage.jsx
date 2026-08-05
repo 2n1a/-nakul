@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { schedules } from '../data/schedules'
+import { fetchSchedule } from '../lib/supabase'
+import { schedules as fallbackSchedules } from '../data/schedules'
 import PageTransition from '../components/PageTransition'
 import ScheduleTable from '../components/ScheduleTable'
 import ActivityDetails from '../components/ActivityDetails'
@@ -10,10 +12,45 @@ import ComingSoon from './ComingSoon'
 export default function SchedulePage() {
   const { grade, term } = useParams()
   const key = `${grade}-${term}`
-  const data = schedules[key]
+  
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+    setLoading(true)
+
+    fetchSchedule(grade, term).then(result => {
+      if (isMounted) {
+        setData(result)
+        setLoading(false)
+      }
+    })
+
+    return () => {
+      isMounted = false
+    }
+  }, [grade, term])
 
   // key ไม่มีในระบบเลย → 404 กลับบ้าน
-  if (!(key in schedules)) return <Navigate to="/" replace />
+  if (!(key in fallbackSchedules)) return <Navigate to="/" replace />
+
+  if (loading) {
+    return (
+      <PageTransition>
+        <div className="schedule-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            style={{ textAlign: 'center', color: '#ff66a3', fontSize: '1.2rem', fontWeight: 'bold' }}
+          >
+            <span style={{ fontSize: '2.5rem', display: 'block', marginBottom: '10px' }}>⏳</span>
+            กำลังโหลดตารางเรียน...
+          </motion.div>
+        </div>
+      </PageTransition>
+    )
+  }
 
   // key มีแต่ data = null → Coming Soon
   if (!data) return <ComingSoon grade={grade} term={term} />
@@ -69,18 +106,25 @@ export default function SchedulePage() {
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
             >
-              {data.images.map((img, i) => (
-                <motion.img
-                  key={i}
-                  src={`${import.meta.env.BASE_URL}${img.src.replace(/^\//, '')}`}
-                  alt={img.alt}
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.12, duration: 0.4, type: 'spring' }}
-                  whileHover={{ scale: 1.12, rotate: 5 }}
-                />
-              ))}
+              {data.images.map((img, i) => {
+                const isExternal = img.src.startsWith('http://') || img.src.startsWith('https://')
+                const imageSrc = isExternal
+                  ? img.src
+                  : `${import.meta.env.BASE_URL}${img.src.replace(/^\//, '')}`
+
+                return (
+                  <motion.img
+                    key={i}
+                    src={imageSrc}
+                    alt={img.alt}
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    whileInView={{ scale: 1, opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.12, duration: 0.4, type: 'spring' }}
+                    whileHover={{ scale: 1.12, rotate: 5 }}
+                  />
+                )
+              })}
             </motion.div>
           )}
 
@@ -90,3 +134,4 @@ export default function SchedulePage() {
     </PageTransition>
   )
 }
+
