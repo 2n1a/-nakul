@@ -1096,8 +1096,47 @@ body {
 .img-inputs {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   flex: 1;
+}
+
+.img-upload-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-upload-file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #fff0f6, #fce7f3);
+  color: #be185d;
+  font-family: 'Kanit', sans-serif;
+  font-size: 0.85em;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #fbcfe8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.btn-upload-file-label:hover {
+  background: #fbcfe8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(190, 24, 93, 0.15);
+}
+
+.badge-uploaded {
+  font-size: 0.78em;
+  font-weight: 500;
+  background: #dcfce7;
+  color: #15803d;
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid #bbf7d0;
 }
 
 .btn-delete-img {

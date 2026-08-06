@@ -113,7 +113,8 @@ export default function SchedulePage() {
               transition={{ duration: 0.6 }}
             >
               {data.images.map((img, i) => {
-                const isExternal = img.src.startsWith('http://') || img.src.startsWith('https://')
+                if (!img || !img.src) return null
+                const isExternal = img.src.startsWith('http://') || img.src.startsWith('https://') || img.src.startsWith('data:') || img.src.startsWith('blob:')
                 const imageSrc = isExternal
                   ? img.src
                   : `${import.meta.env.BASE_URL}${img.src.replace(/^\//, '')}`

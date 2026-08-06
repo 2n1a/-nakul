@@ -25,6 +25,54 @@ const DAYS_CONFIG = [
   { day: 'ศุกร์', dayClass: 'fri' }
 ]
 
+// Helper สำหรับแปลงและบีบอัดรูปภาพจากเครื่องคอมพิวเตอร์/มือถือ
+function compressAndReadFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const img = new Image()
+      img.onload = () => {
+        const canvas = document.createElement('canvas')
+        const MAX_WIDTH = 1200
+        const MAX_HEIGHT = 1200
+        let width = img.width
+        let height = img.height
+
+        if (width > height) {
+          if (width > MAX_WIDTH) {
+            height = Math.round((height * MAX_WIDTH) / width)
+            width = MAX_WIDTH
+          }
+        } else {
+          if (height > MAX_HEIGHT) {
+            width = Math.round((width * MAX_HEIGHT) / height)
+            height = MAX_HEIGHT
+          }
+        }
+
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0, width, height)
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85)
+        resolve(dataUrl)
+      }
+      img.onerror = reject
+      img.src = e.target.result
+    }
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
+}
+
+function formatImageSrc(src) {
+  if (!src) return ''
+  if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:') || src.startsWith('blob:')) {
+    return src
+  }
+  return `${import.meta.env.BASE_URL}${src.replace(/^\//, '')}`
+}
+
 export default function AdminScheduleForm({
   initialData,
   grade,
@@ -113,6 +161,7 @@ export default function AdminScheduleForm({
         ...cloned,
         title: `ตารางเรียนชั้น${gradeLabel}`,
         subtitle: `ภาคเรียนที่ ${term} ปีการศึกษา 2569`,
+        images: prev.images?.length > 0 ? prev.images : cloned.images
       }))
       alert(`คัดลอกโครงสร้างจาก [${sourceKey}] สำเร็จ!`)
     }
@@ -134,18 +183,17 @@ export default function AdminScheduleForm({
       const newRows = [...prev.rows]
       const currentCell = newRows[rowIndex].cells[cellIndex]
       if (mode === 'nap') {
-        newRows[rowIndex].cells[cellIndex] = { isNap: !currentCell.isNap, label: currentCell.isNap ? 'สร้างสรรค์' : 'นอนพักกลางวัน', sub: '' }
+        newRows[rowIndex].cells[cellIndex] = { ...currentCell, isNap: !currentCell.isNap, label: !currentCell.isNap ? 'นอนพักกลางวัน' : '', sub: '' }
       }
       return { ...prev, rows: newRows }
     })
   }
 
   // Activity list items handler
-  const handleActivityItemTextChange = (actIndex, textValue) => {
-    const items = textValue.split('\n').map(s => s.trim()).filter(Boolean)
+  const handleActivityItemChange = (actIndex, itemIndex, value) => {
     setFormData(prev => {
       const newActs = [...prev.activities]
-      newActs[actIndex] = { ...newActs[actIndex], items }
+      newActs[actIndex].items[itemIndex] = value
       return { ...prev, activities: newActs }
     })
   }
@@ -166,6 +214,20 @@ export default function AdminScheduleForm({
       newImgs[index] = { ...newImgs[index], [field]: value }
       return { ...prev, images: newImgs }
     })
+  }
+
+  // Handle local file upload and compression
+  const handleFileUpload = async (index, file) => {
+    if (!file) return
+    try {
+      const base64Data = await compressAndReadFile(file)
+      handleImageChange(index, 'src', base64Data)
+      if (!formData.images[index]?.alt || formData.images[index]?.alt === 'รูปกิจกรรม') {
+        handleImageChange(index, 'alt', file.name.replace(/\.[^/.]+$/, ''))
+      }
+    } catch (err) {
+      alert('เกิดข้อผิดพลาดในการอ่านไฟล์รูปภาพ: ' + err.message)
+    }
   }
 
   const handleAddImage = () => {
@@ -239,7 +301,7 @@ export default function AdminScheduleForm({
                 {formData.images.filter(img => img.src).map((img, i) => (
                   <img
                     key={i}
-                    src={img.src}
+                    src={formatImageSrc(img.src)}
                     alt={img.alt || 'รูปกิจกรรม'}
                     style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '14px', border: '3px solid #ff66a3' }}
                   />
@@ -361,10 +423,17 @@ export default function AdminScheduleForm({
                   ) : (
                     <div>
                       <textarea
-                        rows={5}
+                        rows={4}
                         className="admin-textarea"
                         value={(act.items || []).join('\n')}
-                        onChange={(e) => handleActivityItemTextChange(ai, e.target.value)}
+                        onChange={(e) => {
+                          const items = e.target.value.split('\n').map(s => s.trim()).filter(Boolean)
+                          setFormData(prev => {
+                            const newActs = [...prev.activities]
+                            newActs[ai] = { ...newActs[ai], items }
+                            return { ...prev, activities: newActs }
+                          })
+                        }}
                         placeholder="พิมพ์ 1 บรรทัดต่อ 1 กิจกรรม"
                       />
                       <span className="input-hint">💡 พิมพ์ 1 กิจกรรมต่อ 1 บรรทัด (ขึ้นบรรทัดใหม่เพื่อแยกข้อ)</span>
@@ -378,42 +447,71 @@ export default function AdminScheduleForm({
           {/* ส่วนที่ 4: แกลเลอรีรูปภาพ */}
           <div className="form-section">
             <h3 className="section-title">🖼️ 4. รูปภาพน่ารักๆ ประจำเทอม</h3>
+            <p className="section-desc">
+              ✨ <strong>อัปโหลดง่ายๆ:</strong> กดปุ่ม <em>"📁 เลือกรูปภาพจากเครื่อง"</em> เพื่ออัปโหลดและบันทึกลงระบบทันที หรือพิมพ์พาธไฟล์ <em>/images/pre-k1/pic1.jpg</em> หากเก็บไว้ใน Git
+            </p>
+
             <div className="images-editor-list">
-              {(formData.images || []).map((img, ii) => (
-                <div key={ii} className="image-item-card">
-                  <div className="img-preview-thumb">
-                    {img.src ? (
-                      <img src={img.src} alt={img.alt || 'preview'} onError={(e) => { e.target.style.display = 'none' }} />
-                    ) : (
-                      <span className="no-img">ไม่มีรูป</span>
-                    )}
+              {(formData.images || []).map((img, ii) => {
+                const displaySrc = formatImageSrc(img.src)
+                return (
+                  <div key={ii} className="image-item-card">
+                    <div className="img-preview-thumb">
+                      {img.src ? (
+                        <img
+                          src={displaySrc}
+                          alt={img.alt || 'preview'}
+                          onError={(e) => { e.target.style.opacity = '0.3' }}
+                        />
+                      ) : (
+                        <span className="no-img">ไม่มีรูป</span>
+                      )}
+                    </div>
+                    <div className="img-inputs">
+                      <div className="img-upload-actions">
+                        <label className="btn-upload-file-label">
+                          📁 เลือกรูปภาพจากเครื่อง
+                          <input
+                            type="file"
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            onChange={(e) => {
+                              if (e.target.files?.[0]) {
+                                handleFileUpload(ii, e.target.files[0])
+                              }
+                            }}
+                          />
+                        </label>
+                        {img.src?.startsWith('data:') && (
+                          <span className="badge-uploaded">✅ อัปโหลดจากเครื่องแล้ว</span>
+                        )}
+                      </div>
+                      <input
+                        type="text"
+                        className="admin-input"
+                        value={img.src || ''}
+                        onChange={(e) => handleImageChange(ii, 'src', e.target.value)}
+                        placeholder="หรือระบุ URL รูปภาพ เช่น /images/pre-k1/pic1.jpg"
+                      />
+                      <input
+                        type="text"
+                        className="admin-input"
+                        value={img.alt || ''}
+                        onChange={(e) => handleImageChange(ii, 'alt', e.target.value)}
+                        placeholder="คำอธิบายรูปภาพ"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-delete-img"
+                      onClick={() => handleRemoveImage(ii)}
+                      title="ลบรูปภาพนี้"
+                    >
+                      🗑️
+                    </button>
                   </div>
-                  <div className="img-inputs">
-                    <input
-                      type="text"
-                      className="admin-input"
-                      value={img.src || ''}
-                      onChange={(e) => handleImageChange(ii, 'src', e.target.value)}
-                      placeholder="URL รูปภาพ เช่น /images/pre-k1/pic1.jpg หรือ ลิงก์ออนไลน์"
-                    />
-                    <input
-                      type="text"
-                      className="admin-input"
-                      value={img.alt || ''}
-                      onChange={(e) => handleImageChange(ii, 'alt', e.target.value)}
-                      placeholder="คำอธิบายรูปภาพ"
-                    />
-                  </div>
-                  <button
-                    type="button"
-                    className="btn-delete-img"
-                    onClick={() => handleRemoveImage(ii)}
-                    title="ลบรูปภาพนี้"
-                  >
-                    🗑️
-                  </button>
-                </div>
-              ))}
+                )
+              })}
             </div>
             <button
               type="button"
