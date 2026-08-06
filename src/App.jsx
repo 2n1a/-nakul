@@ -2,6 +2,7 @@ import { HashRouter, Routes, Route } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Home from './pages/Home'
 import SchedulePage from './pages/SchedulePage'
+import AdminPage from './pages/AdminPage'
 import StarBackground from './components/StarBackground'
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/schedule/:grade/:term" element={<SchedulePage />} />
+            <Route path="/admin" element={<AdminPage />} />
           </Routes>
         </AnimatePresence>
       </div>

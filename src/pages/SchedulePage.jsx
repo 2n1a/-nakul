@@ -32,8 +32,14 @@ export default function SchedulePage() {
     }
   }, [grade, term])
 
-  // key ไม่มีในระบบเลย → 404 กลับบ้าน
-  if (!(key in fallbackSchedules)) return <Navigate to="/" replace />
+  // ตรวจสอบความถูกต้องของ grade และ term
+  const validGrades = ['pre-k', 'k1', 'k2', 'k3']
+  const isValidGrade = validGrades.includes(grade)
+  const isValidTerm = [1, 2].includes(Number(term))
+
+  if (!isValidGrade || !isValidTerm) {
+    return <Navigate to="/" replace />
+  }
 
   if (loading) {
     return (
@@ -52,7 +58,7 @@ export default function SchedulePage() {
     )
   }
 
-  // key มีแต่ data = null → Coming Soon
+  // หากไม่มีข้อมูลในเทอมนี้ → แสดงหน้า Coming Soon
   if (!data) return <ComingSoon grade={grade} term={term} />
 
   return (

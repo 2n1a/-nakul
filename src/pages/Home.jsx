@@ -1,6 +1,8 @@
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { levels } from '../data/schedules'
+import { fetchAvailableScheduleKeys } from '../lib/supabase'
 import PageTransition from '../components/PageTransition'
 
 const containerVariants = {
@@ -13,10 +15,17 @@ const cardVariants = {
   show:   { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.45, ease: [0.23, 1, 0.32, 1] } },
 }
 
-// เทอมที่มีข้อมูลแล้ว
-const ACTIVE_TERMS = new Set(['pre-k-1'])
-
 export default function Home() {
+  const [activeTerms, setActiveTerms] = useState(new Set(['pre-k-1']))
+
+  useEffect(() => {
+    fetchAvailableScheduleKeys().then(keys => {
+      if (keys && keys.size > 0) {
+        setActiveTerms(keys)
+      }
+    })
+  }, [])
+
   return (
     <PageTransition>
       <div className="home-page">
@@ -53,14 +62,14 @@ export default function Home() {
               <div className="term-buttons">
                 {level.terms.map(term => {
                   const key = `${level.id}-${term}`
-                  const isActive = ACTIVE_TERMS.has(key)
+                  const isActive = activeTerms.has(key)
                   return (
                     <Link
                       key={term}
                       to={`/schedule/${level.id}/${term}`}
                       className={`btn-term${isActive ? ' active' : ''}`}
                     >
-                      {isActive ? `เทอม ${term} (ล่าสุด ✨)` : `เทอม ${term}`}
+                      {isActive ? `เทอม ${term} ✨` : `เทอม ${term}`}
                     </Link>
                   )
                 })}
@@ -71,8 +80,14 @@ export default function Home() {
 
         <div className="home-footer">
           <p>จัดทำด้วยความรัก 💖 สำหรับน้องณกุลคนเก่ง</p>
+          <div style={{ marginTop: '16px' }}>
+            <Link to="/admin" className="btn-admin-link">
+              🔒 จัดการตารางเรียน (Admin)
+            </Link>
+          </div>
         </div>
       </div>
     </PageTransition>
   )
 }
+

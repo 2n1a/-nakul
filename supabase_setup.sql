@@ -22,12 +22,24 @@ CREATE TABLE IF NOT EXISTS public.schedules (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- 2. เปิดใช้งาน Row Level Security (RLS) และอนุญาตให้ทุกคนอ่านข้อมูลได้ (Public Read)
+-- 2. เปิดใช้งาน Row Level Security (RLS) และอนุญาตให้อ่าน/เขียนข้อมูลได้ (Public Access สำหรับระบบครอบครัว)
 ALTER TABLE public.schedules ENABLE ROW LEVEL SECURITY;
 
 DROP POLICY IF EXISTS "Allow public read access" ON public.schedules;
 CREATE POLICY "Allow public read access" ON public.schedules
     FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Allow public insert access" ON public.schedules;
+CREATE POLICY "Allow public insert access" ON public.schedules
+    FOR INSERT WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public update access" ON public.schedules;
+CREATE POLICY "Allow public update access" ON public.schedules
+    FOR UPDATE USING (true) WITH CHECK (true);
+
+DROP POLICY IF EXISTS "Allow public delete access" ON public.schedules;
+CREATE POLICY "Allow public delete access" ON public.schedules
+    FOR DELETE USING (true);
 
 -- 3. ใส่ข้อมูลเริ่มต้น (เตรียมอนุบาล เทอม 1)
 INSERT INTO public.schedules (id, grade, term, title, subtitle, periods, rows, activities, images)
