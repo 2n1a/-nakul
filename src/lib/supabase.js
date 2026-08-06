@@ -1,14 +1,27 @@
 import { createClient } from '@supabase/supabase-js'
 import { schedules as fallbackSchedules } from '../data/schedules'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const rawUrl = import.meta.env.VITE_SUPABASE_URL || 'https://lakhlpcelvdmhduwcmyq.supabase.co'
+const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Gahkl8Fh22Ll0-N33kEqAA_Dkjp-YtR'
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey)
+function initSupabase() {
+  if (!rawUrl || !rawKey || typeof rawUrl !== 'string' || typeof rawKey !== 'string') {
+    return null
+  }
+  try {
+    const parsed = new URL(rawUrl)
+    if (!parsed.protocol.startsWith('http') || parsed.hostname === 'localhost' && !rawUrl.includes('54321')) {
+      // Basic check
+    }
+    return createClient(rawUrl, rawKey)
+  } catch (err) {
+    console.warn('Supabase initialization bypassed or invalid URL:', err)
+    return null
+  }
+}
 
-export const supabase = isSupabaseConfigured
-  ? createClient(supabaseUrl, supabaseAnonKey)
-  : null
+export const supabase = initSupabase()
+export const isSupabaseConfigured = Boolean(supabase)
 
 const LOCAL_STORAGE_PREFIX = 'nakul_schedule_data_'
 
