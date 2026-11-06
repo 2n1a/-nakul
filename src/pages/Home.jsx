@@ -16,7 +16,7 @@ const cardVariants = {
 }
 
 export default function Home() {
-  const [activeTerms, setActiveTerms] = useState(new Set(['pre-k-1']))
+  const [activeTerms, setActiveTerms] = useState(new Set(['pre-k-1', 'pre-k-2']))
 
   useEffect(() => {
     fetchAvailableScheduleKeys().then(keys => {

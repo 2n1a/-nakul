@@ -249,6 +249,15 @@ export default function AdminScheduleForm({
     onSave(formData)
   }
 
+  const handleCopyCode = () => {
+    const codeSnippet = `'${grade}-${term}': ${JSON.stringify(formData, null, 2)},`
+    navigator.clipboard.writeText(codeSnippet).then(() => {
+      alert(`คัดลอกโค้ดข้อมูล [${grade}-${term}] ลงคลิปบอร์ดแล้ว! สามารถนำไปวางในไฟล์ src/data/schedules.js ได้เลย`)
+    }).catch(() => {
+      alert('ไม่สามารถคัดลอกอัตโนมัติได้')
+    })
+  }
+
   return (
     <div className="admin-form-container">
       {/* Tab Switcher & Quick Actions */}
@@ -278,6 +287,14 @@ export default function AdminScheduleForm({
             onClick={() => handleCopyTemplate('pre-k-1')}
           >
             📋 คัดลอกจากเตรียมอนุบาล เทอม 1
+          </button>
+          <button
+            type="button"
+            className="btn-quick-template"
+            onClick={handleCopyCode}
+            title="คัดลอกเป็นโค้ดสำหรับวางใน src/data/schedules.js"
+          >
+            💻 คัดลอกโค้ด JSON
           </button>
         </div>
       </div>

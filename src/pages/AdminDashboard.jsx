@@ -15,6 +15,7 @@ export default function AdminDashboard({ onLogout }) {
   const [saving, setSaving] = useState(false)
   const [activeKeys, setActiveKeys] = useState(new Set())
   const [saveSuccessMsg, setSaveSuccessMsg] = useState('')
+  const [saveWarningMsg, setSaveWarningMsg] = useState('')
 
   const selectedLevel = levels.find(l => l.id === selectedGrade) || levels[0]
   const currentKey = `${selectedGrade}-${selectedTerm}`
@@ -35,6 +36,7 @@ export default function AdminDashboard({ onLogout }) {
     let isMounted = true
     setLoading(true)
     setSaveSuccessMsg('')
+    setSaveWarningMsg('')
 
     fetchSchedule(selectedGrade, selectedTerm).then(res => {
       if (isMounted) {
@@ -51,17 +53,21 @@ export default function AdminDashboard({ onLogout }) {
   const handleSave = async (formData) => {
     setSaving(true)
     setSaveSuccessMsg('')
+    setSaveWarningMsg('')
 
     try {
       const result = await saveSchedule(selectedGrade, selectedTerm, formData)
       if (result.success) {
         setScheduleData(formData)
         await reloadAvailableKeys()
-        setSaveSuccessMsg(
-          result.savedToSupabase
-            ? `บันทึกข้อมูล ${selectedLevel.label} เทอม ${selectedTerm} ลง Supabase และระบบเรียบร้อยแล้ว! 🎉`
-            : `บันทึกข้อมูล ${selectedLevel.label} เทอม ${selectedTerm} ลงในระบบเรียบร้อยแล้ว! 🎉`
-        )
+        if (result.savedToSupabase) {
+          setSaveSuccessMsg(`บันทึกข้อมูล ${selectedLevel.label} เทอม ${selectedTerm} ลงฐานข้อมูลออนไลน์ (Supabase) เรียบร้อยแล้ว! 🎉`)
+        } else {
+          setSaveSuccessMsg(`บันทึกข้อมูล ${selectedLevel.label} เทอม ${selectedTerm} ลงในเบราว์เซอร์เครื่องนี้เรียบร้อยแล้ว! 💾`)
+          if (result.supabaseError) {
+            setSaveWarningMsg(`⚠️ ไม่สามารถบันทึกลงฐานข้อมูลออนไลน์ (Supabase) ได้: ${result.supabaseError} (กรุณาตรวจสอบว่าได้รันไฟล์ supabase_setup.sql ใน Supabase SQL Editor หรือยัง)`)
+          }
+        }
       }
     } catch (err) {
       alert('เกิดข้อผิดพลาดในการบันทึก: ' + err.message)
@@ -172,6 +178,11 @@ export default function AdminDashboard({ onLogout }) {
                   <div className="success-text">
                     <strong>{saveSuccessMsg}</strong>
                     <p>คุณสามารถเปิดดูหน้าแสดงผลจริงได้ทันที</p>
+                    {saveWarningMsg && (
+                      <p style={{ color: '#c62828', marginTop: '6px', fontWeight: 500 }}>
+                        {saveWarningMsg}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <Link

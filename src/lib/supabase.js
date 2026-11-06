@@ -1,8 +1,23 @@
 import { createClient } from '@supabase/supabase-js'
 import { schedules as fallbackSchedules } from '../data/schedules'
 
-const rawUrl = import.meta.env.VITE_SUPABASE_URL || 'https://lakhlpcelvdmhduwcmyq.supabase.co'
-const rawKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'sb_publishable_Gahkl8Fh22Ll0-N33kEqAA_Dkjp-YtR'
+const DEFAULT_URL = 'https://lakhlpcelvdmhduwcmyq.supabase.co'
+const DEFAULT_KEY = 'sb_publishable_Gahkl8Fh22Ll0-N33kEqAA_Dkjp-YtR'
+
+function cleanEnvValue(val, fallback) {
+  if (!val || typeof val !== 'string') return fallback
+  // กรณีที่ใน GitHub Secrets เผลอใส่เป็น "KEY = VALUE" ให้ตัดเอาเฉพาะ VALUE ด้านหลัง '='
+  let cleaned = val.trim()
+  if (cleaned.includes('=')) {
+    cleaned = cleaned.split('=').slice(1).join('=').trim()
+  }
+  // ตัดเครื่องหมายคำพูด (quotes) ถ้ามี
+  cleaned = cleaned.replace(/^['"]|['"]$/g, '').trim()
+  return cleaned || fallback
+}
+
+const rawUrl = cleanEnvValue(import.meta.env.VITE_SUPABASE_URL, DEFAULT_URL)
+const rawKey = cleanEnvValue(import.meta.env.VITE_SUPABASE_ANON_KEY, DEFAULT_KEY)
 
 function initSupabase() {
   if (!rawUrl || !rawKey || typeof rawUrl !== 'string' || typeof rawKey !== 'string') {
@@ -10,13 +25,17 @@ function initSupabase() {
   }
   try {
     const parsed = new URL(rawUrl)
-    if (!parsed.protocol.startsWith('http') || parsed.hostname === 'localhost' && !rawUrl.includes('54321')) {
-      // Basic check
+    if (!parsed.protocol.startsWith('http')) {
+      return createClient(DEFAULT_URL, DEFAULT_KEY)
     }
     return createClient(rawUrl, rawKey)
   } catch (err) {
-    console.warn('Supabase initialization bypassed or invalid URL:', err)
-    return null
+    console.warn('Supabase URL invalid, falling back to default:', err)
+    try {
+      return createClient(DEFAULT_URL, DEFAULT_KEY)
+    } catch {
+      return null
+    }
   }
 }
 
